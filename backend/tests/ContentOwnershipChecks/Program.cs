@@ -1,0 +1,30 @@
+using KanchanaburiPlatform.Domain.Entities;
+using KanchanaburiPlatform.Application.Specifications.Content;
+
+var relatedShop = Guid.NewGuid();
+var userContent = new Content { CreatedByUserId = "writer", ShopId = relatedShop, Status = "Published" };
+var shopContent = new Content { CreatedByUserId = "writer", ContentType = "Shop", ShopId = relatedShop, OwnerShopId = relatedShop, Status = "Published" };
+var checks = 0;
+void Check(bool condition, string name) { if (!condition) throw new Exception(name); checks++; }
+Check(ContentOwnership.CanManage(userContent, "writer", false, "merchant"), "User manages their own linked article");
+Check(!ContentOwnership.CanManage(userContent, "merchant", false, "merchant"), "Mentioned merchant cannot manage user content");
+Check(!ContentOwnership.CanManage(userContent, "other", false, null), "Other user is forbidden");
+Check(ContentOwnership.CanManage(userContent, "admin", true, null), "Admin manages user content");
+Check(ContentOwnership.CanManage(shopContent, "merchant", false, "merchant"), "Current shop owner manages shop content");
+Check(!ContentOwnership.CanManage(shopContent, "writer", false, "merchant"), "Original writer cannot bypass shop ownership");
+Check(!ContentOwnership.CanManage(shopContent, "other", false, "merchant"), "Other shop owner is forbidden");
+Check(!ContentOwnership.CanManage(shopContent, null, false, "merchant"), "Anonymous is forbidden");
+Check(ContentOwnership.CanManage(shopContent, "admin", true, null), "Admin manages shop content");
+var malformed = new Content { ContentType = "Shop", CreatedByUserId = "writer" };
+Check(!ContentOwnership.CanManage(malformed, "writer", false, "writer"), "Shop content requires an owning shop");
+var draft = new Content { CreatedByUserId = "writer", Status = "Draft" };
+var archived = new Content { CreatedByUserId = "writer", Status = "Archived" };
+var all = new[] { userContent, shopContent, draft, archived }.AsQueryable();
+var mine = new ContentSearchSpecification(status: null, createdByUserId: "writer", contentType: "User", includeUnpublished: true).ApplyCriteria(all).ToList();
+Check(mine.Count == 3 && !mine.Contains(shopContent), "Personal list includes own drafts and archived articles, excludes shop content");
+var owned = new ContentSearchSpecification(status: null, contentType: "Shop", ownerShopId: relatedShop, includeUnpublished: true).ApplyCriteria(all).ToList();
+Check(owned.Count == 1 && owned[0] == shopContent, "Shop list excludes linked user articles");
+var mentions = new ContentSearchSpecification(shopId: relatedShop, contentType: "User").ApplyCriteria(all).ToList();
+Check(mentions.Count == 1 && mentions[0] == userContent, "Mentions show only published user articles");
+Check(new ContentSearchSpecification().ApplyCriteria(all).Count() == 2, "Public list hides drafts and archives");
+Console.WriteLine($"Passed {checks} ownership and list isolation checks.");

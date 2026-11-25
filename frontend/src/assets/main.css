@@ -1,0 +1,128 @@
+@import "@mdi/font/css/materialdesignicons.css";
+@import "tailwindcss";
+
+@theme {
+  --color-orange-primary: #D96C2C;
+  --color-orange-hover: #BF5720;
+  --color-orange-accent: #F2A65A;
+  --color-cream-bg: #F7F0E6;
+  --color-cream-surface: #FFF9F2;
+  --color-brown-text: #332820;
+  --color-brown-muted: #786B62;
+  --color-cream-border: #E8D9C9;
+  --color-video-dark: #171412;
+}
+
+:root {
+  --primary: #D96C2C;
+  --primary-hover: #BF5720;
+  --accent: #F2A65A;
+  --background: #F7F0E6;
+  --surface: #FFF9F2;
+  --text: #332820;
+  --text-secondary: #786B62;
+  --border: #E8D9C9;
+  --video: #171412;
+
+  font-family: 'Krub', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+html {
+  font-size: 17.5px;
+  font-family: 'Krub', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body, button, input, select, textarea, div, span, p, h1, h2, h3, h4, h5, h6, a {
+  font-family: 'Krub', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+  font-size: 1.1rem;
+  line-height: 1.7;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* Tone down ultra-heavy font-black (900) to clean, modern font-bold (700) */
+.font-black {
+  font-weight: 700 !important;
+}
+
+/* Remove ugly default browser rectangular focus outline on all interactive elements */
+*,
+*::before,
+*::after {
+  -webkit-tap-highlight-color: transparent;
+}
+
+*:focus,
+*:focus-visible,
+*:active {
+  outline: none !important;
+}
+
+a,
+button,
+input,
+select,
+textarea,
+[role="button"],
+[tabindex] {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+a:focus,
+a:focus-visible,
+a:active,
+button:focus,
+button:focus-visible,
+button:active,
+input:focus,
+input:focus-visible,
+input:active,
+select:focus,
+select:focus-visible,
+select:active,
+textarea:focus,
+textarea:focus-visible,
+textarea:active,
+[role="button"]:focus,
+[role="button"]:focus-visible,
+[role="button"]:active,
+[tabindex]:focus,
+[tabindex]:focus-visible,
+[tabindex]:active {
+  outline: none !important;
+  outline-offset: 0 !important;
+  -webkit-focus-ring-color: transparent !important;
+}
+
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner {
+  border-style: none !important;
+  padding: 0 !important;
+}
+
+/* Scroll reveal (see shared/directives/reveal.ts): hidden until in view, then plays once.
+   fill-mode "backwards" (not "both") so hover transforms still work afterwards. */
+.reveal {
+  opacity: 0;
+}
+.reveal-in {
+  animation: reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
